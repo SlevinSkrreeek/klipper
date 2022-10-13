@@ -161,6 +161,7 @@ bootloader_request(void)
  * Startup
  ****************************************************************/
 
+#include "uc1701_starting.h"
 // Main entry point - called from armcm_boot.c:ResetHandler()
 void
 armcm_main(void)
@@ -188,6 +189,8 @@ armcm_main(void)
 
     // Configure main clock
     clock_setup();
+
+    BIQU_HurakanStarting();
 
     sched_main();
 }
