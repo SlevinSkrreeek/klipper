@@ -1,3 +1,35 @@
+/*****************************************************************************
+ * Copyright (c) 2019, Nations Technologies Inc.
+ *
+ * All rights reserved.
+ * ****************************************************************************
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the disclaimer below.
+ *
+ * Nations' name may not be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY NATIONS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+ * DISCLAIMED. IN NO EVENT SHALL NATIONS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ****************************************************************************/
+
+#ifndef ____N32G45x_ADC____
+#define ____N32G45x_ADC____
+
+#define __IO volatile
+
 typedef struct
 {
   uint32_t WorkMode;
@@ -100,6 +132,42 @@ typedef struct
 #define RCC_ADCHCLK_DIV16 ((uint32_t)0x00000007)
 #define RCC_ADCHCLK_DIV32 ((uint32_t)0x00000008)
 #define RCC_ADCHCLK_DIV_OTHERS ((uint32_t)0x00000008)
+
+#define RCC_ADC1MCLK_SRC_HSI ((uint32_t)0x00000000)
+#define RCC_ADC1MCLK_SRC_HSE ((uint32_t)0x00000400)
+
+#define RCC_ADC1MCLK_DIV1  ((uint32_t)0x00000000)
+#define RCC_ADC1MCLK_DIV2  ((uint32_t)0x00000800)
+#define RCC_ADC1MCLK_DIV3  ((uint32_t)0x00001000)
+#define RCC_ADC1MCLK_DIV4  ((uint32_t)0x00001800)
+#define RCC_ADC1MCLK_DIV5  ((uint32_t)0x00002000)
+#define RCC_ADC1MCLK_DIV6  ((uint32_t)0x00002800)
+#define RCC_ADC1MCLK_DIV7  ((uint32_t)0x00003000)
+#define RCC_ADC1MCLK_DIV8  ((uint32_t)0x00003800)
+#define RCC_ADC1MCLK_DIV9  ((uint32_t)0x00004000)
+#define RCC_ADC1MCLK_DIV10 ((uint32_t)0x00004800)
+#define RCC_ADC1MCLK_DIV11 ((uint32_t)0x00005000)
+#define RCC_ADC1MCLK_DIV12 ((uint32_t)0x00005800)
+#define RCC_ADC1MCLK_DIV13 ((uint32_t)0x00006000)
+#define RCC_ADC1MCLK_DIV14 ((uint32_t)0x00006800)
+#define RCC_ADC1MCLK_DIV15 ((uint32_t)0x00007000)
+#define RCC_ADC1MCLK_DIV16 ((uint32_t)0x00007800)
+#define RCC_ADC1MCLK_DIV17 ((uint32_t)0x00008000)
+#define RCC_ADC1MCLK_DIV18 ((uint32_t)0x00008800)
+#define RCC_ADC1MCLK_DIV19 ((uint32_t)0x00009000)
+#define RCC_ADC1MCLK_DIV20 ((uint32_t)0x00009800)
+#define RCC_ADC1MCLK_DIV21 ((uint32_t)0x0000A000)
+#define RCC_ADC1MCLK_DIV22 ((uint32_t)0x0000A800)
+#define RCC_ADC1MCLK_DIV23 ((uint32_t)0x0000B000)
+#define RCC_ADC1MCLK_DIV24 ((uint32_t)0x0000B800)
+#define RCC_ADC1MCLK_DIV25 ((uint32_t)0x0000C000)
+#define RCC_ADC1MCLK_DIV26 ((uint32_t)0x0000C800)
+#define RCC_ADC1MCLK_DIV27 ((uint32_t)0x0000D000)
+#define RCC_ADC1MCLK_DIV28 ((uint32_t)0x0000D800)
+#define RCC_ADC1MCLK_DIV29 ((uint32_t)0x0000E000)
+#define RCC_ADC1MCLK_DIV30 ((uint32_t)0x0000E800)
+#define RCC_ADC1MCLK_DIV31 ((uint32_t)0x0000F000)
+#define RCC_ADC1MCLK_DIV32 ((uint32_t)0x0000F800)
 
 #define RCC_AHB_PERIPH_ADC1 ((uint32_t)0x00001000)
 #define RCC_AHB_PERIPH_ADC2 ((uint32_t)0x00002000)
@@ -258,142 +326,6 @@ typedef struct
 #define ADC_CTRL3_CALDIF_MSK ((uint32_t)0x01L << 2)
 #define ADC_CTRL3_RES_MSK ((uint32_t)0x03L << 0)
 
-void
-ADC_Init (ADC_Module *NS_ADCx, ADC_InitType *ADC_InitStruct)
-{
-  uint32_t tmpreg1 = 0;
-  uint8_t tmpreg2 = 0;
-
-  /*---------------------------- ADCx CTRL1 Configuration -----------------*/
-  /* Get the ADCx CTRL1 value */
-  tmpreg1 = NS_ADCx->CTRL1;
-  /* Clear DUALMOD and SCAN bits */
-  tmpreg1 &= CTRL1_CLR_MASK;
-  /* Configure ADCx: Dual mode and scan conversion mode */
-  /* Set DUALMOD bits according to WorkMode value */
-  /* Set SCAN bit according to MultiChEn value */
-  tmpreg1 |= (uint32_t) (ADC_InitStruct->WorkMode
-                         | ((uint32_t)ADC_InitStruct->MultiChEn << 8));
-  /* Write to ADCx CTRL1 */
-  NS_ADCx->CTRL1 = tmpreg1;
-
-  /*---------------------------- ADCx CTRL2 Configuration -----------------*/
-  /* Get the ADCx CTRL2 value */
-  tmpreg1 = NS_ADCx->CTRL2;
-  /* Clear CONT, ALIGN and EXTSEL bits */
-  tmpreg1 &= CTRL2_CLR_MASK;
-  /* Configure ADCx: external trigger event and continuous conversion mode */
-  /* Set ALIGN bit according to DatAlign value */
-  /* Set EXTSEL bits according to ExtTrigSelect value */
-  /* Set CONT bit according to ContinueConvEn value */
-  tmpreg1
-      |= (uint32_t) (ADC_InitStruct->DatAlign | ADC_InitStruct->ExtTrigSelect
-                     | ((uint32_t)ADC_InitStruct->ContinueConvEn << 1));
-  /* Write to ADCx CTRL2 */
-  NS_ADCx->CTRL2 = tmpreg1;
-
-  /*---------------------------- ADCx RSEQ1 Configuration -----------------*/
-  /* Get the ADCx RSEQ1 value */
-  tmpreg1 = NS_ADCx->RSEQ1;
-  /* Clear L bits */
-  tmpreg1 &= RSEQ1_CLR_MASK;
-  /* Configure ADCx: regular channel sequence length */
-  /* Set L bits according to ChsNumber value */
-  tmpreg2 |= (uint8_t) (ADC_InitStruct->ChsNumber - (uint8_t)1);
-  tmpreg1 |= (uint32_t)tmpreg2 << 20;
-  /* Write to ADCx RSEQ1 */
-  NS_ADCx->RSEQ1 = tmpreg1;
-}
-
-void
-ADC_ConfigRegularChannel (ADC_Module *NS_ADCx, uint8_t ADC_Channel,
-                          uint8_t Rank, uint8_t ADC_SampleTime)
-{
-  uint32_t tmpreg1 = 0, tmpreg2 = 0;
-
-  if (ADC_Channel == ADC_CH_18)
-    {
-      tmpreg1 = NS_ADCx->SAMPT3;
-      tmpreg1 &= (~0x00000007);
-      tmpreg1 |= ADC_SampleTime;
-      NS_ADCx->SAMPT3 = tmpreg1;
-    }
-  else if (ADC_Channel > ADC_CH_9) /* if ADC_CH_10 ... ADC_CH_17 is selected */
-    {
-      /* Get the old register value */
-      tmpreg1 = NS_ADCx->SAMPT1;
-      /* Calculate the mask to clear */
-      tmpreg2 = SAMPT1_SMP_SET << (3 * (ADC_Channel - 10));
-      /* Clear the old channel sample time */
-      tmpreg1 &= ~tmpreg2;
-      /* Calculate the mask to set */
-      tmpreg2 = (uint32_t)ADC_SampleTime << (3 * (ADC_Channel - 10));
-      /* Set the new channel sample time */
-      tmpreg1 |= tmpreg2;
-      /* Store the new register value */
-      NS_ADCx->SAMPT1 = tmpreg1;
-    }
-  else /* ADC_Channel include in ADC_Channel_[0..9] */
-    {
-      /* Get the old register value */
-      tmpreg1 = NS_ADCx->SAMPT2;
-      /* Calculate the mask to clear */
-      tmpreg2 = SAMPT2_SMP_SET << (3 * ADC_Channel);
-      /* Clear the old channel sample time */
-      tmpreg1 &= ~tmpreg2;
-      /* Calculate the mask to set */
-      tmpreg2 = (uint32_t)ADC_SampleTime << (3 * ADC_Channel);
-      /* Set the new channel sample time */
-      tmpreg1 |= tmpreg2;
-      /* Store the new register value */
-      NS_ADCx->SAMPT2 = tmpreg1;
-    }
-  /* For Rank 1 to 6 */
-  if (Rank < 7)
-    {
-      /* Get the old register value */
-      tmpreg1 = NS_ADCx->RSEQ3;
-      /* Calculate the mask to clear */
-      tmpreg2 = SQR3_SEQ_SET << (5 * (Rank - 1));
-      /* Clear the old SQx bits for the selected rank */
-      tmpreg1 &= ~tmpreg2;
-      /* Calculate the mask to set */
-      tmpreg2 = (uint32_t)ADC_Channel << (5 * (Rank - 1));
-      /* Set the SQx bits for the selected rank */
-      tmpreg1 |= tmpreg2;
-      /* Store the new register value */
-      NS_ADCx->RSEQ3 = tmpreg1;
-    }
-  /* For Rank 7 to 12 */
-  else if (Rank < 13)
-    {
-      /* Get the old register value */
-      tmpreg1 = NS_ADCx->RSEQ2;
-      /* Calculate the mask to clear */
-      tmpreg2 = SQR2_SEQ_SET << (5 * (Rank - 7));
-      /* Clear the old SQx bits for the selected rank */
-      tmpreg1 &= ~tmpreg2;
-      /* Calculate the mask to set */
-      tmpreg2 = (uint32_t)ADC_Channel << (5 * (Rank - 7));
-      /* Set the SQx bits for the selected rank */
-      tmpreg1 |= tmpreg2;
-      /* Store the new register value */
-      NS_ADCx->RSEQ2 = tmpreg1;
-    }
-  /* For Rank 13 to 16 */
-  else
-    {
-      /* Get the old register value */
-      tmpreg1 = NS_ADCx->RSEQ1;
-      /* Calculate the mask to clear */
-      tmpreg2 = SQR1_SEQ_SET << (5 * (Rank - 13));
-      /* Clear the old SQx bits for the selected rank */
-      tmpreg1 &= ~tmpreg2;
-      /* Calculate the mask to set */
-      tmpreg2 = (uint32_t)ADC_Channel << (5 * (Rank - 13));
-      /* Set the SQx bits for the selected rank */
-      tmpreg1 |= tmpreg2;
-      /* Store the new register value */
-      NS_ADCx->RSEQ1 = tmpreg1;
-    }
-}
+void ADC_Init(ADC_Module* ADCx, ADC_InitType* ADC_InitStruct);
+void ADC_ConfigRegularChannel(ADC_Module* ADCx, uint8_t ADC_Channel, uint8_t Rank, uint8_t ADC_SampleTime);
+#endif
